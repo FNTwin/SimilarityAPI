@@ -1,6 +1,7 @@
 import numpy as np
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import normalize
+import os 
 
 def kernel(x1,x2,n):
     return ((x1@x2) / (( x1@x1 ) * (x2@x2))**0.5)**n
@@ -14,15 +15,23 @@ def distancekernel(x1,x2,n=1):
 def reduce_dimension(data):
     n=10
     ax_n=1
-    pca_data=np.loadtxt("data\SOAP_full.txt")
+    FILE_DIR = os.path.dirname(os.path.abspath(__file__))
+    PARENT_DIR = os.path.join(FILE_DIR, os.pardir) 
+    dir_of_interest = os.path.join(PARENT_DIR, "data")
+    pca_data=np.loadtxt(os.path.join(dir_of_interest,"SOAP_full.txt"))
     pca = PCA(n_components=n).fit(pca_data)
     return normalize(pca.transform(data), axis= ax_n) 
 
 
 def compose_new_simil(reduced_data=None):
+    FILE_DIR = os.path.dirname(os.path.abspath(__file__))
+    # absolute path to this file's root directory
+    PARENT_DIR = os.path.join(FILE_DIR, os.pardir) 
+    dir_of_interest = os.path.join(PARENT_DIR, "data")
     if reduced_data is None:
-        return np.loadtxt("data\Similarity_matrix.txt")
-    computed_simil=np.loadtxt("data\SOAP_reduced.txt") #Maybe wrong file
+        # absolute path to this file
+        return np.loadtxt(os.path.join(dir_of_interest, "Similarity_matrix.txt"))
+    computed_simil=np.loadtxt(os.path.join(dir_of_interest,"SOAP_reduced.txt")) #Maybe wrong file
     return np.vstack((computed_simil,reduced_data))
 
 def build_ordered_sim_matrix(data):
